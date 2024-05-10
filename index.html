@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convertidor de Texto a HTML</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      margin: 50px auto;
+      max-width: 600px;
+      text-align: center;
+    }
+    #inputText {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    #output {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 100px;
+      text-align: left;
+      white-space: pre-wrap; /* Para conservar los saltos de línea */
+    }
+    #copyButton {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Convertidor de Texto a HTML</h1>
+    <textarea id="inputText" placeholder="Ingresa tu texto aquí"></textarea>
+    <div id="output"></div>
+    <button id="copyButton">Copiar Código HTML</button>
+  </div>
+
+  <script>
+    document.getElementById('inputText').addEventListener('input', function() {
+      var inputText = this.value;
+      var outputDiv = document.getElementById('output');
+      var paragraphs = inputText.split('\n\n').map(function(paragraph, index) {
+        if (index === 0) {
+          return '<h3 class="titulo">' + paragraph.trim().replace(/\n/g, '<br>') + '</h3>';
+        } else {
+          var lines = paragraph.split('\n');
+          var paragraphHTML = '';
+          for (var i = 0; i < lines.length; i++) {
+            paragraphHTML += lines[i].trim();
+            if (i !== lines.length - 1) {
+              paragraphHTML += '<br>';
+            }
+          }
+          return '<p>' + paragraphHTML + '</p>';
+        }
+      });
+      outputDiv.innerHTML = paragraphs.join('');
+    });
+
+    document.getElementById('copyButton').addEventListener('click', function() {
+      var outputDiv = document.getElementById('output');
+      outputDiv.querySelectorAll('p').forEach(function(p) {
+        if (p.textContent.trim() === '') {
+          p.remove();
+        }
+      });
+      var htmlContent = outputDiv.innerHTML;
+      var el = document.createElement('textarea');
+      el.value = htmlContent;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      alert('El código HTML ha sido copiado al portapapeles.');
+    });
+  </script>
+</body>
+</html>
