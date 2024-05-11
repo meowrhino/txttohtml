@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Convertidor de Texto a HTML</title>
   <style>
+    /* Estilos CSS */
     body {
       font-family: Arial, sans-serif;
     }
+
     .container {
       margin: 50px auto;
       max-width: 600px;
       text-align: center;
     }
+
     #inputText {
       width: 100%;
       padding: 10px;
       margin-bottom: 20px;
     }
+
     #output {
       border: 1px solid #ccc;
       padding: 10px;
       min-height: 100px;
       text-align: left;
-      white-space: pre-wrap; /* Para conservar los saltos de línea */
+      white-space: pre-wrap;
+      /* Para conservar los saltos de línea */
     }
+
     #copyButton {
       background-color: #4CAF50;
       color: white;
@@ -35,54 +42,125 @@
       border-radius: 5px;
       margin-top: 10px;
     }
+
+    .input-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .input-group select,
+    .input-group input[type="text"] {
+      width: calc(33.33% - 10px);
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Convertidor de Texto a HTML</h1>
+    <!-- Textarea para ingresar el texto -->
     <textarea id="inputText" placeholder="Ingresa tu texto aquí"></textarea>
+    <!-- Campos para fecha, lugar y tipo -->
+    <div class="input-group">
+      <label for="fecha">Fecha:</label>
+      <input type="datetime-local" id="fecha" name="fecha">
+    </div>
+    <div class="input-group">
+      <label for="lugar">Lugar:</label>
+      <select id="lugar" name="lugar">
+        <option value="casa">casa</option>
+        <option value="otro">otro</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="tipo">Tipo:</label>
+      <select id="tipo" name="tipo">
+        <option value="idea">idea</option>
+        <option value="noDiario">no diario</option>
+        <option value="diario">diario</option>
+        <option value="main">main</option>
+        <option value="misc">misc</option>
+        <option value="rtf">rtf</option>
+        <option value="otro">otro</option>
+      </select>
+    </div>
+    <!-- Div donde se muestra el HTML generado -->
     <div id="output"></div>
+    <!-- Botón para copiar el HTML generado -->
     <button id="copyButton">Copiar Código HTML</button>
   </div>
 
   <script>
-    document.getElementById('inputText').addEventListener('input', function() {
+    // Event listener para el textarea, convierte texto a HTML
+    document.getElementById('inputText').addEventListener('input', function () {
+      // Obtener el texto ingresado
       var inputText = this.value;
+      // Seleccionar el div donde se mostrará el HTML generado
       var outputDiv = document.getElementById('output');
-      var paragraphs = inputText.split('\n\n').map(function(paragraph, index) {
-        if (index === 0) {
-          return '<h3 class="titulo">' + paragraph.trim().replace(/\n/g, '<br>') + '</h3>';
-        } else {
-          var lines = paragraph.split('\n');
-          var paragraphHTML = '';
-          for (var i = 0; i < lines.length; i++) {
-            paragraphHTML += lines[i].trim();
-            if (i !== lines.length - 1) {
-              paragraphHTML += '<br>';
-            }
+      // Dividir el texto en párrafos y convertirlos a HTML
+      var paragraphs = inputText.split('\n\n').map(function (paragraph) {
+        // Remover los espacios en blanco alrededor del párrafo
+        paragraph = paragraph.trim();
+        // Si el párrafo no está vacío, convertirlo a HTML
+        if (paragraph !== '') {
+          // Si es el primer párrafo, se convierte a título h3
+          if (paragraph === inputText.split('\n\n')[0]) {
+            return '<h3 class="titulo">' + paragraph.replace(/\n/g, '<br>') + '</h3>';
+          } else {
+            // Si no, se convierte a párrafo p
+            return '<p>' + paragraph.replace(/\n/g, '<br>') + '</p>';
           }
-          return '<p>' + paragraphHTML + '</p>';
         }
       });
+      // Mostrar el HTML generado en el div de salida
       outputDiv.innerHTML = paragraphs.join('');
     });
 
-    document.getElementById('copyButton').addEventListener('click', function() {
+    // Event listener para el botón de copiar
+    document.getElementById('copyButton').addEventListener('click', function () {
+      // Seleccionar el div de salida
       var outputDiv = document.getElementById('output');
-      outputDiv.querySelectorAll('p').forEach(function(p) {
+      // Eliminar párrafos vacíos antes de copiar
+      outputDiv.querySelectorAll('p').forEach(function (p) {
         if (p.textContent.trim() === '') {
           p.remove();
         }
       });
+      // Obtener el contenido HTML del div de salida
       var htmlContent = outputDiv.innerHTML;
+      // Crear un div temporal para agregar la información adicional
+      var tempDiv = document.createElement('div');
+      // Clonar el contenido actual para evitar modificar el original
+      tempDiv.innerHTML = htmlContent;
+      // Agregar la información adicional al div temporal
+      var dateValue = document.getElementById('fecha').value;
+      // Convertir el formato de fecha y hora
+      var formattedDate = dateValue.replace(/-/g, '/').replace('T', ' ');
+      var lugarValue = document.getElementById('lugar').value;
+      var tipoValue = document.getElementById('tipo').value;
+      // Crear una sección y agregar clase basada en el valor de tipo
+      var section = document.createElement('section');
+      section.classList.add(tipoValue);
+      // Agregar el contenido al div temporal
+      section.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValue + '</small></div>';
+      // Obtener el HTML actualizado
+      var updatedHtmlContent = section.outerHTML;
+      // Crear un textarea temporal para copiar el contenido HTML
       var el = document.createElement('textarea');
-      el.value = htmlContent;
+      el.value = updatedHtmlContent;
       document.body.appendChild(el);
       el.select();
+      // Copiar el contenido al portapapeles
       document.execCommand('copy');
       document.body.removeChild(el);
-      alert('El código HTML ha sido copiado al portapapeles.');
+
+      // Mostrar una alerta de éxito
+      alert('El código HTML con la información adicional ha sido copiado al portapapeles.');
     });
   </script>
 </body>
+
 </html>
+
+
