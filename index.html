@@ -135,14 +135,13 @@
       tempDiv.innerHTML = htmlContent;
       // Agregar la información adicional al div temporal
       var dateValue = document.getElementById('fecha').value;
-      // Dividir la fecha en partes (año, mes, día)
+      // Dividir la fecha en partes (año, mes, día, hora, minutos)
       var parts = dateValue.split('T')[0].split('-');
+      var timeParts = dateValue.split('T')[1].split(':');
       // Obtener el año en formato de dos dígitos
       var year = parts[0].substring(2);
       // Obtener el día y mes en el formato deseado (dd/mm/aa)
       var formattedDate = parts[2] + '/' + parts[1] + '/' + year;
-      // Dividir la hora en partes (horas, minutos)
-      var timeParts = dateValue.split('T')[1].split(':');
       // Obtener la hora en formato de dos dígitos
       var formattedTime = timeParts[0] + ':' + timeParts[1];
       var lugarValue = document.getElementById('lugar').value;
