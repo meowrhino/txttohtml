@@ -135,15 +135,23 @@
       tempDiv.innerHTML = htmlContent;
       // Agregar la información adicional al div temporal
       var dateValue = document.getElementById('fecha').value;
-      // Convertir el formato de fecha y hora
-      var formattedDate = dateValue.replace(/-/g, '/').replace('T', ' ');
+      // Dividir la fecha en partes (año, mes, día)
+      var parts = dateValue.split('T')[0].split('-');
+      // Obtener el año en formato de dos dígitos
+      var year = parts[0].substring(2);
+      // Obtener el día y mes en el formato deseado (dd/mm/aa)
+      var formattedDate = parts[2] + '/' + parts[1] + '/' + year;
+      // Dividir la hora en partes (horas, minutos)
+      var timeParts = dateValue.split('T')[1].split(':');
+      // Obtener la hora en formato de dos dígitos
+      var formattedTime = timeParts[0] + ':' + timeParts[1];
       var lugarValue = document.getElementById('lugar').value;
       var tipoValue = document.getElementById('tipo').value;
       // Crear una sección y agregar clase basada en el valor de tipo
       var section = document.createElement('section');
       section.classList.add(tipoValue);
       // Agregar el contenido al div temporal
-      section.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValue + '</small></div>';
+      section.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + ' ' + formattedTime + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValue + '</small></div>';
       // Obtener el HTML actualizado
       var updatedHtmlContent = section.outerHTML;
       // Crear un textarea temporal para copiar el contenido HTML
@@ -164,3 +172,15 @@
 </html>
 
 
+<section class="idea">
+  <h3 class="titulo">aaaaaa<br>aaaa<br>aa</h3>
+  <p>aaaaaa<br>aa</p>
+  <p>aaa</p>
+  <p>aaa</p>
+  <p>aaa</p>
+  <div class="data">
+    <small class="date">09/05/24 14:15</small>
+    <small class="place">casa</small>
+    <small class="type">idea</small>
+  </div>
+</section>
