@@ -71,6 +71,8 @@
       <select id="lugar" name="lugar">
         <option value="casa">casa</option>
         <option value="otro">otro</option>
+        <option value="apolo">apolo</option>
+        <option value="PS">PS 2024</option>
       </select>
     </div>
     <div class="input-group">
@@ -147,12 +149,12 @@
       var lugarValue = document.getElementById('lugar').value;
       var tipoValue = document.getElementById('tipo').value;
       // Crear una sección y agregar clase basada en el valor de tipo
-      var section = document.createElement('section');
-      section.classList.add(tipoValue);
+      var article = document.createElement('article');
+      article.classList.add(tipoValue);
       // Agregar el contenido al div temporal
-      section.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + ' ' + formattedTime + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValue + '</small></div>';
+      article.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + ' ' + formattedTime + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValue + '</small></div>';
       // Obtener el HTML actualizado
-      var updatedHtmlContent = section.outerHTML;
+      var updatedHtmlContent = article.outerHTML;
       // Crear un textarea temporal para copiar el contenido HTML
       var el = document.createElement('textarea');
       el.value = updatedHtmlContent;
