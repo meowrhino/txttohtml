@@ -70,9 +70,13 @@
       <label for="lugar">Lugar:</label>
       <select id="lugar" name="lugar">
         <option value="casa">casa</option>
+        <option value="curro">curro</option>
         <option value="otro">otro</option>
         <option value="apolo">apolo</option>
-        <option value="PS">PS 2024</option>
+        <option value="PS">PS</option>
+        <option value="rzm">rizomes</option>
+        <option value="sonar">sonar</option>
+
       </select>
     </div>
     <div class="input-group">
@@ -85,8 +89,11 @@
         <option value="misc">misc</option>
         <option value="rtf">rtf</option>
         <option value="otro">otro</option>
+        <option value="cancion">canción</option>
       </select>
     </div>
+    <div id="additionalTypesContainer"></div>
+    <button id="addTypeButton">Añadir otro tipo</button>
     <!-- Div donde se muestra el HTML generado -->
     <div id="output"></div>
     <!-- Botón para copiar el HTML generado -->
@@ -119,6 +126,32 @@
       outputDiv.innerHTML = paragraphs.join('');
     });
 
+    // Function to create a new "tipo" select element
+    function createNewTipoElement() {
+      var div = document.createElement('div');
+      div.className = 'input-group';
+      div.innerHTML = `
+        <label for="tipo">Tipo:</label>
+        <select name="tipo">
+          <option value="idea">idea</option>
+          <option value="noDiario">no diario</option>
+          <option value="diario">diario</option>
+          <option value="main">main</option>
+          <option value="misc">misc</option>
+          <option value="rtf">rtf</option>
+          <option value="otro">otro</option>
+          <option value="cancion">canción</option>
+        </select>
+      `;
+      document.getElementById('additionalTypesContainer').appendChild(div);
+    }
+
+    // Initial event listener for the first button
+    document.getElementById('addTypeButton').addEventListener('click', function (e) {
+      e.preventDefault();
+      createNewTipoElement();
+    });
+
     // Event listener para el botón de copiar
     document.getElementById('copyButton').addEventListener('click', function () {
       // Seleccionar el div de salida
@@ -147,12 +180,14 @@
       // Obtener la hora en formato de dos dígitos
       var formattedTime = timeParts[0] + ':' + timeParts[1];
       var lugarValue = document.getElementById('lugar').value;
-      var tipoValue = document.getElementById('tipo').value;
+      var tipoValues = Array.from(document.querySelectorAll('select[name="tipo"]')).map(select => select.value);
       // Crear una sección y agregar clase basada en el valor de tipo
       var article = document.createElement('article');
-      article.classList.add(tipoValue);
+      tipoValues.forEach(tipoValue => {
+        article.classList.add(tipoValue);
+      });
       // Agregar el contenido al div temporal
-      article.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + ' ' + formattedTime + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValue + '</small></div>';
+      article.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + formattedDate + ' ' + formattedTime + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValues.join(', ') + '</small></div>';
       // Obtener el HTML actualizado
       var updatedHtmlContent = article.outerHTML;
       // Crear un textarea temporal para copiar el contenido HTML
