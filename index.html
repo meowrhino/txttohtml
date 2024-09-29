@@ -32,7 +32,8 @@
       /* Para conservar los saltos de línea */
     }
 
-    #copyButton {
+    #copyButton,
+    #downloadButton {
       background-color: #4CAF50;
       color: white;
       padding: 15px 20px;
@@ -76,7 +77,6 @@
         <option value="PS">PS</option>
         <option value="rzm">rizomes</option>
         <option value="sonar">sonar</option>
-
       </select>
     </div>
     <div class="input-group">
@@ -99,6 +99,8 @@
     <div id="output"></div>
     <!-- Botón para copiar el HTML generado -->
     <button id="copyButton">Copiar Código HTML</button>
+    <!-- Botón para descargar el archivo HTML -->
+    <button id="downloadButton">Descargar Código HTML</button>
   </div>
 
   <script>
@@ -202,6 +204,50 @@
 
       // Mostrar una alerta de éxito
       alert('El código HTML con la información adicional ha sido copiado al portapapeles.');
+    });
+
+    // Event listener para el botón de descargar
+    document.getElementById('downloadButton').addEventListener('click', function () {
+      // Obtener el contenido del HTML
+      var outputDiv = document.getElementById('output');
+      var htmlContent = outputDiv.innerHTML;
+      // Crear un div temporal para agregar la información adicional
+      var tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+
+      // Agregar la información adicional al div temporal
+      var dateValue = document.getElementById('fecha').value;
+      var parts = dateValue.split('T')[0].split('-');
+      var timeParts = dateValue.split('T')[1].split(':');
+      // Formato del nombre del archivo
+      var fileName = `${parts[0]}_${parts[1]}_${parts[2]}_${timeParts[0]}_${timeParts[1]}.html`;
+
+      var lugarValue = document.getElementById('lugar').value;
+      var tipoValues = Array.from(document.querySelectorAll('select[name="tipo"]')).map(select => select.value);
+      // Crear una sección y agregar clase basada en el valor de tipo
+      var article = document.createElement('article');
+      tipoValues.forEach(tipoValue => {
+        article.classList.add(tipoValue);
+      });
+      // Agregar el contenido al div temporal
+      article.innerHTML = tempDiv.innerHTML + '<div class="data"><small class="date">' + parts.join('-') + ' ' + timeParts.join(':') + '</small><small class="place">' + lugarValue + '</small><small class="type">' + tipoValues.join(', ') + '</small></div>';
+      
+      // Obtener el HTML actualizado
+      var updatedHtmlContent = article.outerHTML;
+
+      // Crear un Blob con el contenido HTML
+      var blob = new Blob([updatedHtmlContent], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+      
+      // Crear un enlace de descarga
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      // Liberar el objeto URL
+      URL.revokeObjectURL(url);
     });
   </script>
 </body>
